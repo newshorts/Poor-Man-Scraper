@@ -53,7 +53,7 @@ function getTransactions(dataSet) {
 
 function getDebits(transactions) {
 	return transactions.filter(function(t) {
-		return t.isDebit && t.isSpending && !t.isTransfer && t.merchant !== 'Meadows Web Pmts';
+		return t.isDebit && t.isSpending && !t.isTransfer && t.merchant !== 'Meadows Web Pmts' && t.merchant !== 'The Meadows';
 	});
 }
 
