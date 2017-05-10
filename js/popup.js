@@ -50,4 +50,5 @@ function setCopyPaste(data) {
 	//totalElem.textContent = data.total;
 }
 
+chrome.tabs.executeScript(null, { file: "js/ignoreRules.js" }); // inject the script
 chrome.tabs.executeScript(null, { file: "js/page.js" }); // inject the script

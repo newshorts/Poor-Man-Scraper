@@ -5,14 +5,17 @@
 
 'use strict';
 var separator = ' | ';
+var port = null;
 
-var port = chrome.runtime.connect({name: "mint_data_collector"});
+requestAnimationFrame(function() {
+	port = chrome.runtime.connect({name: "mint_data_collector"});
 
-port.onMessage.addListener(function(request) {
-	if (request.msg === "get_transactions_for_day") {
-		var queryMintForData = getMintQuery(request.dayString);
-		queryMintForData.then(handleData);
-	}
+	port.onMessage.addListener(function(request) {
+		if (request.msg === "get_transactions_for_day") {
+			var queryMintForData = getMintQuery(request.dayString);
+			queryMintForData.then(handleData);
+		}
+	});
 });
 
 function getMintQuery(dayStr) {
@@ -42,7 +45,10 @@ function handleData(data) {
 	var todaysTransactions = filterToday(debits, today);
 	var info = totalTransactions(todaysTransactions);
 
-	port.postMessage({msg: 'set_copy_paste', info: info});
+	var message = {msg: 'set_copy_paste', info: info};
+	console.log(message);
+
+	port.postMessage(message);
 }
 
 function getTransactions(dataSet) {
@@ -53,7 +59,13 @@ function getTransactions(dataSet) {
 
 function getDebits(transactions) {
 	return transactions.filter(function(t) {
-		return t.isDebit && t.isSpending && !t.isTransfer && t.merchant !== 'Meadows Web Pmts' && t.merchant !== 'The Meadows';
+		for(var i = 0, len = RICHMAN.ignoreRules.length; i < len; i++) {
+			var test = RICHMAN.ignoreRules[i].call(null, t);
+			if(!test) {
+				return false
+			}
+		}
+		return true;
 	});
 }
 
@@ -62,7 +74,6 @@ function filterToday(transactions, today) {
 		var year = new Date().getFullYear();
 		var dataDateString = t.date + ' ' + year;
 		var dataDay = new Date(dataDateString).toDateString();
-
 		return (today === dataDay);
 	});
 }

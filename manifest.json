@@ -1,12 +1,12 @@
 {
 	"name": "Poor Man Grabber",
 	"description": "Grabs the content from Mint and copies it.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"permissions": [
 		"activeTab"
 	],
 	"background": {
-		"scripts": ["js/jquery-3.2.1.min.js", "js/jquery-ui.min.js", "js/popup.js", "js/page.js"],
+		"scripts": ["js/jquery-3.2.1.min.js", "js/jquery-ui.min.js", "js/popup.js", "js/ignoreRules.js", "js/page.js"],
 		"css": [ "css/jquery-ui.min.css" ],
 		"persistent": false
 	},
